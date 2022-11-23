@@ -1,7 +1,7 @@
 ﻿using System;
 using Akka.Actor;
 
-namespace WinTail
+namespace Akka_tutorial
 {
     #region Program
     class Program
@@ -13,12 +13,15 @@ namespace WinTail
             // initialize MyActorSystem
             MyActorSystem = ActorSystem.Create("MyActorSystem");
 
-            // time to make your first actors!
-            var consoleWriterActor = MyActorSystem.ActorOf(Props.Create(() =>
-                new ConsoleWriterActor()));
+            // nothing here where our actors used to be!
+            Props consoleWriterProps = Props.Create<ConsoleWriterActor>();
+            IActorRef consoleWriterActor = MyActorSystem.ActorOf(consoleWriterProps, "consoleWriterActor");
 
-            var consoleReaderActor = MyActorSystem.ActorOf(Props.Create(() =>
-                new ConsoleReaderActor(consoleWriterActor)));
+            Props validationActorProps = Props.Create(() => new ValidationActor(consoleWriterActor));
+            IActorRef validationActor = MyActorSystem.ActorOf(validationActorProps, "validationActor");
+
+            Props consoleReaderProps = Props.Create<ConsoleReaderActor>(validationActor);
+            IActorRef consoleReaderActor = MyActorSystem.ActorOf(consoleReaderProps, "consoleReaderActor");
 
             // tell console reader to begin
             consoleReaderActor.Tell(ConsoleReaderActor.StartCommand);

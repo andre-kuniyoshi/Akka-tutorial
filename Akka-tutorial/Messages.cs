@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace WinTail
+namespace Akka_tutorial
 {
     public class Messages
     {
